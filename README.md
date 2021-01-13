@@ -25,6 +25,8 @@ yarn add @ngry/rx
 
 ## Quick Start
 
+### Async tasks
+
 Use `toTask` operator to track task's state:
 
 ```ts
@@ -36,10 +38,37 @@ export class ExampleService {
   constructor(private http: HttpClient) {
   }
 
-  get(): Observable<TaskState<Example>> {
-    return this.http.get<Example>('...').pipe(
+  get(): Observable<TaskState<Entity>> {
+    return this.http.get<Entity>('...').pipe(
       toTask(),
     );
+  }
+}
+```
+
+Then in your component:
+
+```ts
+import { Observable } from 'rxjs';
+import { Component } from '@angular/core';
+import { TaskState } from '@ngry/rx';
+
+@Component({
+  selector: 'x-example',
+  template: `
+  <ng-container *ngIf="state$ | async as state">
+    <p *ngIf="state.pending">Loading...</p>
+    <pre *ngIf="state.complete">{{ state.result | json }}</pre>
+  </ng-container>
+  `
+})
+export class ExampleComponment {
+  readonly state$: Observable<TaskState<Entity>>
+
+  constructor(
+    private service: ExampleService,
+  ) {
+    this.state$ = service.get();
   }
 }
 ```

@@ -1,3 +1,8 @@
+/**
+ * Represents state of async task.
+ * @since 11.1.0
+ * @author Alex Chugaev
+ */
 export class TaskState<TResult, TError = unknown> {
   static pending<TResult, TError = unknown>(): TaskState<TResult, TError> {
     return new TaskState<TResult, TError>(true, false);
@@ -15,7 +20,7 @@ export class TaskState<TResult, TError = unknown> {
     readonly pending = false,
     readonly complete = false,
     readonly result?: TResult,
-    readonly error?: TError
+    readonly error?: TError,
   ) {
   }
 }
