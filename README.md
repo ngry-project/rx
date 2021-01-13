@@ -37,7 +37,7 @@ export class ExampleService {
   }
 
   get(): Observable<TaskState<Example>> {
-    return this.http.get('...').pipe(
+    return this.http.get<Example>('...').pipe(
       toTask(),
     );
   }
