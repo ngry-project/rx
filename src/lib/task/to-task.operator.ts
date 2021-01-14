@@ -11,7 +11,7 @@ export function toTask<TResult, TError = unknown>(): OperatorFunction<TResult, T
   return source => {
     return source.pipe(
       map((result: TResult) => TaskState.complete<TResult, TError>(result)),
-      catchError((error: TError) => of(TaskState.error<TError, TResult>(error))),
+      catchError((error: TError) => of(TaskState.error<TResult, TError>(error))),
       startWith(TaskState.pending<TResult, TError>()),
     );
   };
