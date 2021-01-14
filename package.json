@@ -31,6 +31,7 @@
     "build:prod": "ng build --prod",
     "test": "ng test",
     "test:coverage": "ng test --coverage",
+    "test:coverage:watch": "ng test --coverage --watch",
     "test:watch": "ng test --watch",
     "lint": "ng lint"
   },
