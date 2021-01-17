@@ -25,9 +25,12 @@ yarn add @ngry/rx
 
 ## Quick Start
 
-### Async tasks
+### `toTask` operator
 
-Use `toTask` operator to track task's state:
+Use `toTask` operator to wrap original `Observable<T>` into the `Observable<TaskState<T>>`.
+
+`TaskState` is an immutable structure that indicates async task's `pending` / `complete` / `failed` state and holds
+task `result` or `error`.
 
 ```ts
 import { Observable } from 'rxjs';
@@ -73,6 +76,59 @@ export class ExampleComponment {
 }
 ```
 
+### `ofType` operator
+
+Use `ofType` operator to filter values by certain type(s) (it uses `instanceof` operator to filter values stream).
+
+```ts
+export class Load {
+  constructor(readonly id: number) {
+  }
+}
+
+export class Loaded {
+  constructor(readonly cart: Cart) {
+  }
+}
+
+export class CartEffects extends EffectsProvider {
+  constructor(
+    actions: Actions,
+    service: CartService,
+  ) {
+    super([
+      actions.pipe(
+        // 👇 Bypass only actions of type Load
+        ofType(Load),
+        switchMap(action => service.load(action.id)),
+        map(cart => new Loaded(cart)),
+      ),
+    ]);
+  }
+}
+```
+
+### `dispatch` operator
+
+Use `dispatch` operator to control whether values must pass through this point of stream or not.
+
+Open mode
+
+```ts
+from([1,2,3])
+  .pipe(dispatch(true))
+  .subscribe(console.log);
+// Prints 1, 2, 3 then completes
+```
+
+Closed mode
+
+```ts
+from([1,2,3])
+  .pipe(dispatch(false))
+  .subscribe(console.log);
+// Ignores values, thus prints nothing and completes
+```
 ## License
 
 MIT
